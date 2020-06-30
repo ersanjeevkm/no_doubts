@@ -1,0 +1,21 @@
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Ask Doubt!
+{% endblock %}
+
+{% block body %}
+    <h3 style="color: green; font-family: 'Berkshire Swash'">Your Doubt!</h3>
+    <br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form|crispy }}
+        <p style="color: deeppink">Attachments are not mandatory. </p>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Commit!
+            <i class="material-icons right">send</i>
+        </button>
+    </form>
+
+{% endblock %}

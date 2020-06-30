@@ -1,0 +1,44 @@
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Account
+{% endblock %}
+
+{% block body %}
+    <h3 style="color: green; font-family: 'Berkshire Swash'">User Account</h3>
+    <a href="{% url 'user_stats' user.username %}" data-toggle="tooltip" data-placement="bottom" title="User Stats" style="float: right"><i
+            class="medium material-icons">insert_chart</i></a>
+    <br>
+    <div style="color: lemonchiffon; overflow: auto">
+        <img class="ml-1" height="125" width="125" alt="profile-pic" style="border-radius: 50%; float: left"
+             src="{{ user.profile.image.url }}">
+        <div class="ml-5 mt-4" style="float: left">
+            <h3 style="color: crimson; font-size: 200%; font-family: 'Berkshire Swash'">{{ user.username }}</h3>
+            <h3 style="color: crimson; font-size: 200%; font-family: 'Berkshire Swash'">{{ user.email }}</h3>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <h3 style="color: green; font-family: 'Berkshire Swash'">Update User Account</h3>
+    <br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ u_form|crispy }}
+        <hr>
+        <div class="text-muted" style="font-size: small">
+            We will notify you for :
+            <ol type="A">
+                <li>The answers you received for your doubts.</li>
+                <li>The accepted status of your answer.</li>
+                <li>The doubts posted on the field you opted for.</li>
+            </ol>
+        </div>
+        {{ p_form|crispy }}
+        <p style="color: deeppink">Choose the squared image for better resolution. </p>
+        <br>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Update account!
+            <i class="material-icons right">send</i>
+        </button>
+    </form>
+{% endblock %}

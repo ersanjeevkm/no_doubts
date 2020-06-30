@@ -1,0 +1,280 @@
+{% extends 'posts/base.html' %}
+{% load filters %}
+{% load filename %}
+{% block title %}
+    Q&A
+{% endblock %}
+
+{% block body %}
+    <h3 style="color: green; font-family: 'Berkshire Swash'">Doubt</h3>
+    <br>
+    <div class="card mb-3" style="border-radius: 3%; background-color:whitesmoke">
+        <div class="card-body">
+            <img style="vertical-align: -15%; border-radius: 50%" width="60" height="60"
+                 src="{{ post.author.profile.image.url }}">
+            <div style="float: right; display: inline; overflow: auto">
+                {% if post.attach_file1 or post.attach_file2 %}
+
+                    <div style="float: left" class="dropdown mr-2">
+                        <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">attachment</i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% if post.attach_file1 %}
+                                <a href="{{ post.attach_file1.url }}" download
+                                   class="dropdown-item">{{ post.attach_file1|filename }}</a>
+                            {% endif %}
+                            {% if post.attach_file2 %}
+                                <a href="{{ post.attach_file2.url }}" download
+                                   class="dropdown-item">{{ post.attach_file2|filename }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                {% endif %}
+                {% if user.is_authenticated %}
+                    {% if user in post.bookmarks.users.all %}
+                        <a class="mr-2" data-toggle="tooltip" data-placement="bottom" title="Remove Bookmark"
+                           href="{% url 'remove_bookmark' post.slug %}"><i
+                                class="small material-icons">bookmark</i></a>
+                    {% else %}
+                        <a class="mr-2" data-toggle="tooltip" data-placement="bottom" title="Bookmark"
+                           href="{% url 'bookmark_post' post.slug %}"><i
+                                class="small material-icons">bookmark_border</i></a>
+                    {% endif %}
+                {% endif %}
+                <a class="btn btn-primary mb-2"
+                   href="{% url 'category_view' post.category %}">{{ post.get_category_display }}</a>
+                <p style="text-align: right">Total answers : {{ post.answers_set.count }}</p>
+            </div>
+            <div class="ml-3" style="display: inline-block">
+                <h3 class="card-link">{{ post.title }}
+                    {% with answers=post.answers_set.all|sort_by:'-verified, -votes, -date_posted' %}
+                        {% if answers.0.verified %}
+                            <span style="color: green">(SOLVED)</span>
+                        {% endif %}
+                    {% endwith %}
+                    <div style="display: inline-block">
+                        {% if user not in post.questionlikevotes.users.all %}
+                            <a href="{% url 'like_question' post.slug %}"><i data-toggle="tooltip"
+                                                                             data-placement="bottom"
+                                                                             title="Liked it"
+                                                                             class="text-success small material-icons ml-2">thumb_up</i></a>
+                        {% elif user in post.questionlikevotes.users.all %}
+                            <a disabled="disabled" style="cursor: not-allowed;"><i data-toggle="tooltip"
+                                                                                   data-placement="bottom"
+                                                                                   title="Already Liked"
+                                                                                   class="text-success small material-icons ml-2">thumb_up</i></a>
+                        {% else %}
+                            <a href="{% url 'like_question' post.slug %}"><i data-toggle="tooltip"
+                                                                             data-placement="bottom"
+                                                                             title="Liked it"
+                                                                             class="text-success small material-icons ml-2">thumb_up</i></a>
+                        {% endif %}
+                        <span class="ml-2" style="font-size: large; color: darkmagenta">{{ post.votes }}</span>
+                        {% if user not in post.questiondislikevotes.users.all %}
+                            <a href="{% url 'dislike_question' post.slug %}"><i data-toggle="tooltip"
+                                                                                data-placement="bottom"
+                                                                                title="Doesn't Liked it"
+                                                                                class="text-danger small material-icons ml-2">thumb_down</i></a>
+                        {% elif user in post.questiondislikevotes.users.all %}
+                            <a disabled="disabled" style="cursor: not-allowed;"><i data-toggle="tooltip"
+                                                                                   data-placement="bottom"
+                                                                                   title="Already disliked"
+                                                                                   class="text-danger small material-icons ml-2">thumb_down</i></a>
+                        {% else %}
+                            <a href="{% url 'dislike_question' post.slug %}"><i data-toggle="tooltip"
+                                                                                data-placement="bottom"
+                                                                                title="Doesn't Liked it"
+                                                                                class="text-danger small material-icons ml-2">thumb_down</i></a>
+                        {% endif %}
+                    </div>
+                </h3>
+                <small class="card-subtitle mb-2 text-muted">by, <a href="{% url 'user_post' post.author.username %}"
+                                                                    class="card-link">{{ post.author }}</a>
+                    on {{ post.date_posted }}
+                </small>
+            </div>
+            <hr>
+            <p style="white-space: pre-wrap" class="card-text">{{ post.question | safe | linebreaks }}</p>
+        </div>
+    </div>
+    <div style="overflow: auto">
+        {% if user == post.author %}
+            <a class="btn btn-primary" href="{% url 'edit_post' post.slug %}">Edit</a>
+            <a class="btn btn-danger" href="{% url 'delete_post' post.slug %}">Delete</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <a style="float: right" class="btn btn-success" href="{% url 'create_answer' post.slug %}">Answer</a>
+        {% endif %}
+    </div>
+    <hr>
+    <h3 style="color: green; font-family: 'Berkshire Swash'">Answer(s) - {{ post.answers_set.count }}</h3>
+    <br>
+    {% for answer in post.answers_set.all|sort_by:'-verified, -votes, -date_posted' %}
+        <div class="card mb-3" style="border-radius: 3%; background-color:whitesmoke">
+            <div class="card-body">
+                <img style="vertical-align: -15%; border-radius: 50%" width="60" height="60"
+                     src="{{ answer.author.profile.image.url }}">
+
+                <ul style="display: inline; float: right">
+                    {% if answer.verified %}
+                        <li><i data-toggle="tooltip" data-placement="bottom" title="Answer accepted"
+                               style="color: green; cursor: default;"
+                               class="small material-icons ml-2">verified_user</i></li>
+                    {% endif %}
+                    {% if answer.question.author == user %}
+                        {% if answer.verified %}
+                            <li><a type="button" style="color: red" data-toggle="tooltip" data-placement="bottom"
+                                   title="Undo from accepted answer" href="{% url 'undo_verification' answer.slug %}">
+                                <i class="small material-icons ml-2">backspace</i>
+                            </a></li>
+                        {% else %}
+                            <li><a href="{% url 'verify_answer' answer.slug %}" type="button" data-toggle="tooltip"
+                                   data-placement="bottom" title="Accept the Answer"
+                                   style="color: green">
+                                <i class="small material-icons ml-2">check</i>
+                            </a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <div style="float: right; display: inline; overflow: auto">
+
+                    {% if user == answer.author %}
+                        <a class="btn btn-primary" href="{% url 'edit_answer' answer.slug %}">Edit</a>
+                        <a class="btn btn-danger"
+                           href="{% url 'delete_answer' answer.question.slug answer.slug %}">Delete</a>
+                        <div style="text-align: center" class="mt-3">
+                            {% if user not in answer.answerlikevotes.users.all %}
+                                <a href="{% url 'like_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                 data-placement="bottom"
+                                                                                 title="Liked it"
+                                                                                 class="text-success small material-icons ml-2">thumb_up</i></a>
+                            {% elif user in answer.answerlikevotes.users.all %}
+                                <a disabled="disabled" style="cursor: not-allowed;"><i data-toggle="tooltip"
+                                                                                       data-placement="bottom"
+                                                                                       title="Already Liked"
+                                                                                       class="text-success small material-icons ml-2">thumb_up</i></a>
+                            {% else %}
+                                <a href="{% url 'like_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                 data-placement="bottom"
+                                                                                 title="Liked it"
+                                                                                 class="text-success small material-icons ml-2">thumb_up</i></a>
+                            {% endif %}
+
+                            <span class="ml-2"
+                                  style="font-size: large; color: darkmagenta"><b>{{ answer.votes }}</b></span>
+                            {% if user not in answer.answerdislikevotes.users.all %}
+                                <a href="{% url 'dislike_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                    data-placement="bottom"
+                                                                                    title="Doesn't Liked it"
+                                                                                    class="text-danger small material-icons ml-2">thumb_down</i></a>
+                            {% elif user in answer.answerdislikevotes.users.all %}
+                                <a disabled="disabled" style="cursor: not-allowed;"><i data-toggle="tooltip"
+                                                                                       data-placement="bottom"
+                                                                                       title="Already disliked"
+                                                                                       class="text-danger small material-icons ml-2">thumb_down</i></a>
+                            {% else %}
+                                <a href="{% url 'dislike_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                    data-placement="bottom"
+                                                                                    title="Doesn't Liked it"
+                                                                                    class="text-danger small material-icons ml-2">thumb_down</i></a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="mt-5">
+                            {% if user not in answer.answerlikevotes.users.all %}
+                                <a href="{% url 'like_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                 data-placement="bottom"
+                                                                                 title="Liked it"
+                                                                                 class="text-success small material-icons ml-2">thumb_up</i></a>
+                            {% elif user in answer.answerlikevotes.users.all %}
+                                <a disabled="disabled" style="cursor: not-allowed;"><i data-toggle="tooltip"
+                                                                                       data-placement="bottom"
+                                                                                       title="Already Liked"
+                                                                                       class="text-success small material-icons ml-2">thumb_up</i></a>
+                            {% else %}
+                                <a href="{% url 'like_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                 data-placement="bottom"
+                                                                                 title="Liked it"
+                                                                                 class="text-success small material-icons ml-2">thumb_up</i></a>
+                            {% endif %}
+                            <span class="ml-2"
+                                  style="font-size: large; color: darkmagenta"><b>{{ answer.votes }}</b></span>
+                            {% if user not in answer.answerdislikevotes.users.all %}
+                                <a href="{% url 'dislike_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                    data-placement="bottom"
+                                                                                    title="Doesn't Liked it"
+                                                                                    class="text-danger small material-icons ml-2">thumb_down</i></a>
+                            {% elif user in answer.answerdislikevotes.users.all %}
+                                <a disabled="disabled" style="cursor: not-allowed;"><i data-toggle="tooltip"
+                                                                                       data-placement="bottom"
+                                                                                       title="Already disliked"
+                                                                                       class="text-danger small material-icons ml-2">thumb_down</i></a>
+                            {% else %}
+                                <a href="{% url 'dislike_answer' answer.slug %}"><i data-toggle="tooltip"
+                                                                                    data-placement="bottom"
+                                                                                    title="Doesn't Liked it"
+                                                                                    class="text-danger small material-icons ml-2">thumb_down</i></a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="ml-3" style="display: inline-block">
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-success mb-3" href="{% url 'create_reply' answer.slug %}">Reply</a>
+                    {% endif %}
+                    {% if answer.attach_file1 or answer.attach_file2 %}
+                        <div class="dropdown ml-2" style="display: inline-block;">
+                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">attachment</i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% if answer.attach_file1 %}
+                                    <a href="{{ answer.attach_file1.url }}" download
+                                       class="dropdown-item">{{ answer.attach_file1|filename }}</a>
+                                {% endif %}
+                                {% if answer.attach_file2 %}
+                                    <a href="{{ answer.attach_file2.url }}" download
+                                       class="dropdown-item">{{ answer.attach_file2|filename }}</a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    {% endif %}
+                    <h5 class="card-subtitle mb-2 text-muted">Answer from, <a
+                            href="{% url 'user_post' answer.author.username %}"
+                            class="card-link">{{ answer.author }}</a>
+                        on {{ answer.date_posted }}
+                    </h5>
+                </div>
+                <hr>
+                <p style="white-space: pre-wrap" class="card-text">{{ answer.answer | safe | linebreaks }}</p>
+            </div>
+        </div>
+        <p style="color: green; font-family:'Berkshire Swash' ">Replies - {{ answer.reply_set.count }}</p>
+        {% if answer.reply_set.all %}
+            <div style="height: 150px; overflow: auto">
+                {% for reply in answer.reply_set|sort_by:'-date_posted' %}
+                    <small>👉 <u>REPLY FROM <b><a
+                            href="{% url 'user_post' reply.author.username %}">{{ reply.author.username }}</a></b>
+                        on {{ reply.date_posted }}</u>
+                        {% if user == reply.author %}
+                            <a style="margin-right:5px; margin-left:5px" href="{% url 'edit_reply' reply.id %}">
+                                Edit </a>
+                            <a style="margin-left:5px"
+                               href="{% url 'delete_reply' reply.answer.question.slug reply.pk %}"> Delete </a>
+                        {% endif %}
+                    </small>
+
+                    <div style="padding-left: 5%">
+                        <small>{{ reply.message }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <hr>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'posts/base.html' %}
+{% block title %}
+    Filter User
+{% endblock %}
+
+{% block body %}
+    <h3 style="color: green; font-family: 'Berkshire Swash'">Total Users - {{ page_obj.paginator.count }}</h3>
+    <br>
+    <div style="padding-left: 5%">
+        {% for user in users %}
+            <h4><u><a href="{% url 'user_post' user.username %}">{{ user.username }}</a></u></h4>
+            <a href="{% url 'user_stats' user.username %}" data-toggle="tooltip" data-placement="bottom"
+               title="User Stats" style="float: right"><i
+                    class="small material-icons">insert_chart</i></a>
+            <p style="padding-left: 5%"><span class="text-danger">User Doubts</span> : {{ user.questions_set.count }}
+                <span class="text-success ml-3">User Answers</span> : {{ user.answers_set.count }} <span
+                        class="text-primary ml-3">User Replies</span> : {{ user.reply_set.count }}</p>
+            <hr>
+        {% endfor %}
+    </div>
+{% endblock %}

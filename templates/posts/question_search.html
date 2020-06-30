@@ -1,0 +1,116 @@
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block title %}
+    Doubts Search
+{% endblock %}
+
+{% block body %}
+    <form method='get'>
+        {{ form|crispy }}
+        <button class="btn waves-effect waves-light" type="submit" name="action">Search!
+            <i class="material-icons right">search</i>
+        </button>
+    </form>
+    <br>
+    {% if query %}
+        <br>
+        <h3 style="color: green; font-family: 'Berkshire Swash'">Search Results - {{ page_obj.paginator.count }}</h3>
+        <br>
+        {% for result in object_list %}
+
+            <div class="card mb-3" style="border-radius: 3%; background-color:whitesmoke">
+                <div class="card-body">
+                    <img style="vertical-align: -15%; border-radius: 50%" width="60" height="60"
+                         src="{{ result.object.author.profile.image.url }}">
+                    <div style="float: right; display: inline; overflow: auto">
+                        {% if user.is_authenticated %}
+                            {% if user in result.object.bookmarks.users.all %}
+                                <a class="mr-2" data-toggle="tooltip" data-placement="bottom" title="Remove Bookmark"
+                                   href="{% url 'remove_bookmark' result.object.slug %}"><i
+                                        class="small material-icons">bookmark</i></a>
+                            {% else %}
+                                <a class="mr-2" data-toggle="tooltip" data-placement="bottom" title="Bookmark"
+                                   href="{% url 'bookmark_post' result.object.slug %}"><i
+                                        class="small material-icons">bookmark_border</i></a>
+                            {% endif %}
+                        {% endif %}
+                        <a class="btn btn-primary mb-2"
+                           href="{% url 'category_view' result.object.category %}">{{ result.object.get_category_display }}</a>
+                        <p style="text-align: right">Total answers : {{ result.object.answers_set.count }}</p>
+
+                    </div>
+                    <div class="ml-3" style="display: inline-block">
+                        <h3><a href="{% url 'post_detail' result.object.slug %}"
+                               class="card-link">{{ result.object.title }}
+                            {% with answers=result.object.answers_set.all|sort_by:'-verified, -date_posted' %}
+                                {% if answers.0.verified %}
+                                    <span style="color: green">(SOLVED)</span>
+                                {% endif %}
+                            {% endwith %}
+                            <div style="display: inline-block">
+                                <i data-toggle="tooltip" data-placement="bottom"
+                                   title="Total Votes"
+                                   class="text-warning small material-icons ml-4">thumbs_up_down</i>
+                                <span class="ml-2"
+                                      style="font-size: large; color: darkmagenta">{{ result.object.votes }}</span>
+                            </div>
+                        </a></h3>
+                        <small class="card-subtitle mb-2 text-muted">by, <a
+                                href="{% url 'user_post' result.object.author.username %}"
+                                class="card-link">{{ result.object.author }}</a>
+                            on {{ result.object.date_posted }}
+                        </small>
+                    </div>
+                    <hr>
+                    <p style="white-space: pre-wrap"
+                       class="card-text">{{ result.object.question | safe | linebreaks }}</p>
+                </div>
+            </div>
+
+        {% empty %}
+            <p>Sorry, Nothing was found. Please be sure with spellings and spaces.</p>
+            <small style="color: deeppink">If you are looking for <u>specific user's post</u> or <u>specific category
+                post</u>, check
+                in our <a href="{% url 'filter' %}">Filters (<i class="tiny material-icons">filter_list</i>)</a>
+                page</small>
+        {% endfor %}
+
+        <hr>
+        <div class="container">
+            {% if is_paginated %}
+                <div style="display:inline-block">
+                    {% if page_obj.has_previous %}
+                        <a class="btn btn-outline-danger mb-2" href="?q={{ query }}&amp;page=1"><< First</a>
+                        <a class="btn btn-outline-danger mb-2"
+                           href="?q={{ query }}&amp;page={{ page_obj.previous_page_number }}"><
+                            Previous</a>
+                    {% endif %}
+                </div>
+
+                <div style="display:inline-block">
+                    {% for page in page_obj.paginator.page_range %}
+                        {% if page_obj.number == page %}
+                            <a class="btn btn-danger mb-2" href="?q={{ query }}&amp;page={{ page }}">{{ page }}</a>
+                        {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                            <a class="btn btn-outline-danger mb-2"
+                               href="?q={{ query }}&amp;page={{ page }}">{{ page }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div style="display:inline-block; float: right">
+                    {% if page_obj.has_next %}
+                        <a class="btn btn-outline-danger mb-2"
+                           href="?q={{ query }}&amp;page={{ page_obj.next_page_number }}">Next ></a>
+                        <a class="btn btn-outline-danger mb-2"
+                           href="?q={{ query }}&amp;page={{ page_obj.paginator.num_pages }}">Last
+                            >></a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+    {% endif %}
+{% endblock %}

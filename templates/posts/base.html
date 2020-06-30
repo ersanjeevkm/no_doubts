@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+    <!-- Fonts and icons import -->
+    <link href='https://fonts.googleapis.com/css?family=Berkshire Swash' rel='stylesheet'>
+    <link rel="icon" href="/media/logo.jpg" type="image/icon type">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>No Doubts - {% block title %}{% endblock %}</title>
+
+</head>
+<body>
+<div class="navbar-fixed">
+
+    <nav>
+        <div class="nav-wrapper">
+            <div class="container">
+                <a data-toggle="tooltip" data-placement="bottom" title="Home" href="{% url 'home' %}" class="brand-logo"
+                   style="font-family: 'Berkshire Swash'; color: lemonchiffon"><i
+                        class="large material-icons">explore</i>No
+                    Doubts</a>
+                <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+
+                <ul class="right hide-on-med-and-down">
+                    {% if user.is_authenticated %}
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Search by Doubt"
+                               href="{% url 'question_search' %}"><i
+                                class="material-icons">search</i></a></li>
+
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Filters"
+                               href="{% url 'filter' %}"><i
+                                class="material-icons">filter_list</i></a></li>
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Ask a doubt"
+                               href="{% url 'create_post' %}"><i
+                                class="material-icons">control_point</i></a></li>
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="User Bookmarks"
+                               href="{% url 'user_bookmarks' %}"><i
+                                class="material-icons">bookmark</i></a></li>
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Your Account"
+                               href="{% url 'account' %}"><i
+                                class="material-icons">account_circle</i></a></li>
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Logout" href="{% url 'logout' %}"><i
+                                class="material-icons">exit_to_app</i></a></li>
+                    {% else %}
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Search by Doubt"
+                               href="{% url 'question_search' %}"><i
+                                class="material-icons">search</i></a></li>
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Filters"
+                               href="{% url 'filter' %}"><i
+                                class="material-icons">filter_list</i></a></li>
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Register here"
+                               href="{% url 'registration' %}"><i
+                                class="material-icons">person_add</i></a></li>
+                        <li><a data-toggle="tooltip" data-placement="bottom" title="Login" href="{% url 'login' %}"><i
+                                class="material-icons">lock_open</i></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<ul class="side-nav" id="mobile-demo">
+    {% if user.is_authenticated %}
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'question_search' %}">Search by Doubt</a></li>
+        <li><a href="{% url 'filter' %}">Filters</a></li>
+        <li><a href="{% url 'create_post' %}">Ask a doubt</a></li>
+        <li><a href="{% url 'user_bookmarks' %}">User Bookmarks</a></li>
+        <li><a href="{% url 'account' %}">Your Account</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+    {% else %}
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'question_search' %}">Search by Doubt</a></li>
+        <li><a href="{% url 'filter' %}">Filters</a></li>
+        <li><a href="{% url 'registration' %}">Register here</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+    {% endif %}
+</ul>
+
+<br>
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }} container" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div class="container">
+    <br>
+    {% block body %}
+    {% endblock %}
+    <br>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $(".button-collapse").sideNav();
+    });
+</script>
+<!-- Bootstrap (tooltip) -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+</html>

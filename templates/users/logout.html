@@ -1,0 +1,14 @@
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Logout
+{% endblock %}
+
+{% block body %}
+    <h3 style="color: green; font-family: 'Berkshire Swash'">User Logged out!</h3>
+    <br>
+    <p>Thanks for spending some quality time with the Web site today.</p>
+    <br>
+    <a href="{% url 'login' %}">Login again -></a>
+{% endblock %}

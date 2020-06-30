@@ -1,0 +1,71 @@
+{% extends 'posts/base.html' %}
+{% load filters %}
+
+{% block title %}
+    User Replies
+{% endblock %}
+
+{% block body %}
+    <div style="overflow: auto">
+        <h3 style="color: green; font-family: 'Berkshire Swash'; display: inline">{{ view.kwargs.username }} Replies
+            - {{ page_obj.paginator.count }}</h3>
+        <div style="display: inline; float: right">
+            <a class="btn btn-primary" href="{% url 'user_post' view.kwargs.username %}">User Doubts</a>
+            <a class="btn btn-secondary" href="{% url 'user_answer' view.kwargs.username %}">User Answers</a>
+        </div>
+    </div>
+    <br>
+    {% for post in replies %}
+        <div class="card mb-3" style="border-radius: 3%; background-color:whitesmoke">
+            <div class="card-body">
+
+                <img style="vertical-align: -15%; border-radius: 50%" width="60" height="60"
+                     src="{{ post.author.profile.image.url }}">
+                <div class="ml-3" style="display: inline-block">
+                    <h3 class="card-link">Replied for an answer in : <a
+                            href="{% url 'post_detail' post.answer.question.slug %}">{{ post.answer.question.title }}
+                        {% with answers=post.answer.question.answers_set.all|sort_by:'-verified, -date_posted' %}
+                            {% if answers.0.verified %}
+                                <span style="color: green">(SOLVED)</span>
+                            {% endif %}
+                        {% endwith %}</a>
+                    </h3>
+                    <h5 class="card-subtitle mb-2 text-muted">from, {{ post.author }}
+                        on {{ post.date_posted }} </h5>
+                </div>
+                <hr>
+                <p style="white-space: pre-wrap" class="card-text">{{ post.message }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    <hr>
+    <div class="container">
+        {% if is_paginated %}
+            <div style="display:inline-block">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-outline-danger mb-2" href="?page=1"><< First</a>
+                    <a class="btn btn-outline-danger mb-2" href="?page={{ page_obj.previous_page_number }}"><
+                        Previous</a>
+                {% endif %}
+            </div>
+
+            <div style="display:inline-block">
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page_obj.number == page %}
+                        <a class="btn btn-danger mb-2" href="?page={{ page }}">{{ page }}</a>
+                    {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                        <a class="btn btn-outline-danger mb-2" href="?page={{ page }}">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div style="display:inline-block; float: right">
+                {% if page_obj.has_next %}
+                    <a class="btn btn-outline-danger mb-2" href="?page={{ page_obj.next_page_number }}">Next ></a>
+                    <a class="btn btn-outline-danger mb-2" href="?page={{ page_obj.paginator.num_pages }}">Last >></a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
