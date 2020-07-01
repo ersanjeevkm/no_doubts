@@ -37,7 +37,7 @@ def create_profile(sender, instance, created, **kwargs):
         send_mail(
             subject=f"Someone has an Doubt based on your field",
             message=message,
-            from_email='er.sanjeev.au@gmail.com',
+            from_email='noreply.nodoubts@gmail.com',
             recipient_list=receivers,
             fail_silently=False,
         )

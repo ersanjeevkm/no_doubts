@@ -159,7 +159,7 @@ class CreateAnswer(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             send_mail(
                 subject=f"Someone has answered your Question {form.instance.question.title}",
                 message=message,
-                from_email='er.sanjeev.au@gmail.com',
+                from_email='noreply.nodoubts@gmail.com',
                 recipient_list=[form.instance.question.author.email],
                 fail_silently=False,
             )
@@ -278,7 +278,7 @@ def verify_answer(request, slug):
                 send_mail(
                     subject=f"{answer.question.title}'s Author has accepted your Answer",
                     message=message,
-                    from_email='er.sanjeev.au@gmail.com',
+                    from_email='noreply.nodoubts@gmail.com',
                     recipient_list=[answer.author.email],
                     fail_silently=False,
                 )
