@@ -16,7 +16,7 @@
     <br>
     {% if query %}
         <br>
-        <h3 style="color: green; font-family: 'Berkshire Swash'">Search Results - {{ page_obj.paginator.count }}</h3>
+        <h3 style="color: green; font-family: 'Berkshire Swash'">Search Results - {{ page_obj.paginator.count|add:'-1' }}</h3>
         <br>
         {% for result in object_list %}
 
