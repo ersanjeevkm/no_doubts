@@ -1,1 +1,1 @@
-web: gunicorn django_project.wsgi
+web: gunicorn no_doubts.wsgi
