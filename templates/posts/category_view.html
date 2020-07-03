@@ -17,7 +17,7 @@
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ posts.0.get_category_display }}
                 </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink" style="height: 1000%; overflow: auto">
                     {% for category in posts.0.QUESTION_CHOICE %}
                         <p style="color:#000000; display: inline" class="dropdown-item disabled"><b>{{ category.0 }}</b>
                         </p>

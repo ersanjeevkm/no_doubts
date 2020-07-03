@@ -43,6 +43,11 @@ class Logout(LoginRequiredMixin, LogoutView):
 def account(request):
     crnt_user(request.user)
 
+    if request.user.profile.field:
+        field_update = False
+    else:
+        field_update = True
+
     if request.method == 'POST':
         u_form = AccountForm(request.POST, instance=request.user)
         p_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
@@ -50,11 +55,12 @@ def account(request):
             u_form.save()
             messages.success(request, 'Account update successful.')
             return redirect('account')
-        context = {'u_form': u_form, 'p_form': p_form}
+        context = {'u_form': u_form, 'p_form': p_form, 'msg': field_update}
     else:
         u_form = AccountForm(instance=request.user)
         p_form = ProfileForm(instance=request.user.profile)
-        context = {'u_form': u_form, 'p_form': p_form}
+
+        context = {'u_form': u_form, 'p_form': p_form, 'msg': field_update}
     return render(request, 'users/account.html', context)
 
 

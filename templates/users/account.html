@@ -6,8 +6,14 @@
 {% endblock %}
 
 {% block body %}
+    {% if msg %}
+        <div class="alert alert-warning container" role="alert">
+            Consider updating the "<a href="#id_field">Field</a>" column of your choice.
+        </div>
+    {% endif %}
     <h3 style="color: green; font-family: 'Berkshire Swash'">User Account</h3>
-    <a href="{% url 'user_stats' user.username %}" data-toggle="tooltip" data-placement="bottom" title="User Stats" style="float: right"><i
+    <a href="{% url 'user_stats' user.username %}" data-toggle="tooltip" data-placement="bottom" title="User Stats"
+       style="float: right"><i
             class="medium material-icons">insert_chart</i></a>
     <br>
     <div style="color: lemonchiffon; overflow: auto">
