@@ -30,10 +30,10 @@
                         {% if user.profile.field != 'N' %}
                             <a href="{% url 'category_view' user.profile.field %}">
                         {% elif user.profile.field == 'N' %}
-                            <a href="{% url 'category_view' 'CS' %}">
+                            <a href="{% url 'category_view' 'CSE' %}">
                         {% endif %}
                     {% else %}
-                        <a href="{% url 'category_view' 'CS' %}">
+                        <a href="{% url 'category_view' 'CSE' %}">
                     {% endif %}
                     <i class="large material-icons" style="color: orange">question_answer</i>
                     <h5>Category based Filter</h5>
