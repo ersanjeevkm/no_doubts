@@ -27,9 +27,9 @@
                 <div class="center" style="background-color:whitesmoke">
                     <br>
                     {% if user.is_authenticated %}
-                        {% if user.profile.field != 'N' %}
+                        {% if user.profile.field %}
                             <a href="{% url 'category_view' user.profile.field %}">
-                        {% elif user.profile.field == 'N' %}
+                        {% else %}
                             <a href="{% url 'category_view' 'CSE' %}">
                         {% endif %}
                     {% else %}
