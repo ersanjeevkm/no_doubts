@@ -1,0 +1,78 @@
+{% extends 'posts/base.html' %}
+{% load filters %}
+
+{% block title %}
+    User Stats
+{% endblock %}
+
+{% block body %}
+    <style>
+        h3, p {
+            display: inline;
+        }
+
+        #div1 {
+            background-color: whitesmoke;
+            padding: 5%;
+        }
+
+        #div2 {
+            background-color: whitesmoke;
+            padding: 5%;
+            text-align: center;
+        }
+    </style>
+    <div class="row">
+        <div class="col s6">
+            <div id="div1">
+                <h3 style="color: green; font-family: 'Berkshire Swash'">{{ user.username }} User Stats</h3>
+                <br><br>
+                <hr>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">User category :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ user.profile.get_field_display }}</b></p>
+                <br><br><br>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">Total Doubts posted by the user
+                    :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ user.questions_set.count }}</b></p>
+                <br><br><br>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">Total User's Doubt solved :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ doubt_solved }}</b></p>
+                <br><br><br>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">Total answers by the user :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ user.answers_set.count }}</b></p>
+                <br><br><br>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">Total User's answers verified
+                    :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ answer_verf }}</b></p>
+                <br><br><br>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">Total replies by the user :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ user.reply_set.count }}</b></p>
+                <br><br><br>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">Total likes for user's doubts
+                    :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ doubt_votes }}</b></p>
+                <br><br><br>
+                <h3 style="color: rgba(183,71,255,1); font-family: 'Berkshire Swash'">Total likes for user's answers
+                    :</h3>
+                <p class="text-muted" style="font-size: large"><b>&nbsp;{{ answer_votes }}</b></p>
+                <br>
+                <br>
+            </div>
+        </div>
+        <div class="col s6">
+            <div id="div2">
+                <img class="responsive-img" style='border-radius: 20%;' src="{{ user.profile.image.url }}"
+                     alt="Profile Pic"><br><br>
+                <h3 style="color: crimson; font-size: 200%; font-family: 'Berkshire Swash'">{{ user.username }}</h3><br><br>
+                <h3 style="color: crimson; font-size: 200%; font-family: 'Berkshire Swash'">{{ user.profile.get_field_display }}</h3>
+            </div>
+        </div>
+    </div>
+    <style>
+        @media only screen and (max-width: 840px) {
+            #div1, #div2 {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}

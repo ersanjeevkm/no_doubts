@@ -1,0 +1,67 @@
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>OWSLA</title>
+    <meta name="author" content="Zied Waridat">
+    <link rel="shortcut icon" href="Images/logo-black.png" type="image/vnd.microsoft.icon">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Import Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <!-- Import lokale CSS -->
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
+    <!-- Laat browser weten dat website geoptimalizeerd is voor mobiele sites -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<!-- Nog te doen: responsive maken, ook logo responsive maken, huidig css voor logo werkt niet-->
+
+<body>
+
+<header>
+    <div class="navbar-fixed">
+        <!-- nav is gefixed-->
+        <nav class="blue">
+            <!-- definieert nav met een class (bv kleur)-->
+            <div class="container">
+                <!-- stopt div in container-->
+                <div class="nav-wrapper">
+                    <a href="index.html" class="brand-logo right"><img id="logo" src="images/logonav.png"
+                                                                       alt="website logo"/></a>
+                    <!-- logo in navbar -->
+                    <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+                    <!-- zorgt ervoor dat navbar responsive wordt-->
+                    <ul class="left hide-on-med-and-down">
+                        <li class="active"><a href="index.html">Home</a></li>
+                        <li><a href="page2.html">Deel 2</a></li>
+                        <li><a href="page3.html">Bronnen &amp; meer</a></li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+    </div>
+    <ul class="side-nav" id="mobile-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="page2.html">Deel 2</a></li>
+        <li><a href="page3.html">Bronnen &amp; meer</a></li>
+    </ul>
+
+</header>
+
+</footer>
+
+<!-- Laad Jqeury code voor JS code bovenaan -->
+<script>
+    $(document).ready(function () {
+        $('.materialboxed').materialbox();
+        $('.scrollspy').scrollSpy();
+        $(".button-collapse").sideNav();
+    });
+</script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+</body>

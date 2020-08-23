@@ -1,0 +1,20 @@
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Delete Reply
+{% endblock %}
+
+{% block body %}
+    <h3 style="color: green; font-family: 'Berkshire Swash'">Delete Doubt!</h3>
+    <br>
+    <form method="post">
+        {% csrf_token %}
+        <h3 style="color: green; font-family: 'Berkshire Swash'">Are you sure that you want to delete this Reply. </h3>
+        <h5>{{ object.message }}</h5>
+        <hr>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Delete!
+        </button>
+        <a class="btn btn-primary ml-2" href="{% url 'post_detail' object.answer.question.slug %}">Cancel</a>
+    </form>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'posts/base.html' %}
+{% load filters %}
+
+{% block title %}
+    Category Questions
+{% endblock %}
+
+{% block body %}
+
+    <div>
+        <h3 style="color: green; font-family: 'Berkshire Swash'; display: inline">{{ posts.0.get_category_display }}
+            Doubts
+            - {{ page_obj.paginator.count }}</h3>
+        <div style="display: inline; float: right">
+            <div class="dropdown show">
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ posts.0.get_category_display }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink" style="height: 1000%; overflow: auto">
+                    {% for category in posts.0.QUESTION_CHOICE %}
+                        <p style="color:#000000; display: inline" class="dropdown-item disabled"><b>{{ category.0 }}</b>
+                        </p>
+                        <div class="dropdown-divider"></div>
+                        {% for sub_cat in category.1 %}
+                            {% if sub_cat.1 != posts.0.get_category_display %}
+                                <a class="dropdown-item"
+                                   href="{% url 'category_view' sub_cat.0 %}">{{ sub_cat.1 }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    {% for post in posts %}
+        <div class="card mb-3" style="border-radius: 3%; background-color:whitesmoke">
+            <div class="card-body">
+                <img style="vertical-align: -15%; border-radius: 50%" width="60" height="60"
+                     src="{{ post.author.profile.image.url }}">
+                <div style="float: right; display: inline; overflow: auto">
+                    {% if user.is_authenticated %}
+                        {% if user in post.bookmarks.users.all %}
+                            <a class="mr-2" data-toggle="tooltip" data-placement="bottom" title="Remove Bookmark"
+                               href="{% url 'remove_bookmark' post.slug %}"><i
+                                    class="small material-icons">bookmark</i></a>
+                        {% else %}
+                            <a class="mr-2" data-toggle="tooltip" data-placement="bottom" title="Bookmark"
+                               href="{% url 'bookmark_post' post.slug %}"><i
+                                    class="small material-icons">bookmark_border</i></a>
+                        {% endif %}
+                    {% endif %}
+                    <p class="btn btn-primary mb-2">{{ post.get_category_display }}</p>
+                    <p style="text-align: right">Total answers - {{ post.answers_set.count }}</p>
+                </div>
+                <div class="ml-3" style="display: inline-block">
+                    <h3><a href="{% url 'post_detail' post.slug %}" class="card-link">{{ post.title }}
+                        {% with answers=post.answers_set.all|sort_by:'-verified, -date_posted' %}
+                            {% if answers.0.verified %}
+                                <span style="color: green">(SOLVED)</span>
+                            {% endif %}
+                        {% endwith %}
+                        <div style="display: inline-block">
+                            <i data-toggle="tooltip" data-placement="bottom"
+                               title="Total Votes"
+                               class="text-warning small material-icons ml-4">thumbs_up_down</i>
+                            <span class="ml-2" style="font-size: large; color: darkmagenta">{{ post.votes }}</span>
+                        </div>
+                    </a></h3>
+                    <small class="card-subtitle mb-2 text-muted">by,<a href="{% url 'user_post' post.author.username %}"
+                                                                       class="card-link"> {{ post.author }}</a>
+                        on {{ post.date_posted }}
+                    </small>
+                </div>
+                <hr>
+                <p style="white-space: pre-wrap" class="card-text">{{ post.question | safe | linebreaks }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    <hr>
+    <div class="container">
+        {% if is_paginated %}
+            <div style="display:inline-block">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-outline-danger mb-2" href="?page=1"><< First</a>
+                    <a class="btn btn-outline-danger mb-2" href="?page={{ page_obj.previous_page_number }}"><
+                        Previous</a>
+                {% endif %}
+            </div>
+
+            <div style="display:inline-block">
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page_obj.number == page %}
+                        <a class="btn btn-danger mb-2" href="?page={{ page }}">{{ page }}</a>
+                    {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                        <a class="btn btn-outline-danger mb-2" href="?page={{ page }}">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div style="display:inline-block; float: right">
+                {% if page_obj.has_next %}
+                    <a class="btn btn-outline-danger mb-2" href="?page={{ page_obj.next_page_number }}">Next ></a>
+                    <a class="btn btn-outline-danger mb-2" href="?page={{ page_obj.paginator.num_pages }}">Last >></a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
